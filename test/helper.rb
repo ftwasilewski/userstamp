@@ -7,6 +7,7 @@ require 'active_support'
 require 'active_record'
 require 'action_controller'
 require 'init'
+require 'pry'
 
 # connect to db
 ActiveRecord::Base.establish_connection({
@@ -23,8 +24,8 @@ rescue LoadError
 end
 require 'active_support/test_case'
 require 'action_controller/test_case'
-require 'action_controller/test_process'
-require 'action_controller/integration'
+# require 'action_controller/test_process'
+# require 'action_controller/integration'
 
 # load test models/controllers
 require 'test/controllers/userstamp_controller'
@@ -35,12 +36,11 @@ require 'test/models/person'
 require 'test/models/post'
 require 'test/models/foo'
 
-ActionController::Routing::Routes.draw do |map|
-  map.connect ':controller/:action/:id'
-end
+# ActionController::Routing::Routes.draw do |map|
+#   map.connect ':controller/:action/:id'
+# end
 
 def reset_to_defaults
-  Ddb::Userstamp.compatibility_mode = false
   create_test_models
 end
 

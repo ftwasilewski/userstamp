@@ -8,4 +8,5 @@ group :dev do
   gem 'activesupport', :require => 'active_support'
   gem 'actionpack', :require => 'action_pack'
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'pry'
 end

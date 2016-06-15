@@ -3,7 +3,7 @@ require 'test/helper'
 class CompatibilityStampingTests < Test::Unit::TestCase  # :nodoc:
   def setup
     create_test_models
-    Ddb::Userstamp.compatibility_mode = true
+    # Ddb::Userstamp.compatibility_mode = true
     require 'test/models/comment'
     Comment.delete_all
     @first_comment = Comment.create!(:comment => 'a comment', :post => @first_post)
@@ -40,12 +40,12 @@ class CompatibilityStampingTests < Test::Unit::TestCase  # :nodoc:
     assert_equal @delynn, comment.creator
     assert_equal @delynn, comment.updater
   end
-  
+
   def test_comment_updating_with_stamped_object
     Person.stamper = @nicole
     assert_equal @nicole.id, Person.stamper
 
-    @first_comment.comment << " - Updated"
+    @first_comment.comment = "Updated"
     @first_comment.save
     @first_comment.reload
     assert_equal @delynn.id, @first_comment.created_by
@@ -58,7 +58,7 @@ class CompatibilityStampingTests < Test::Unit::TestCase  # :nodoc:
     Person.stamper = @nicole.id
     assert_equal @nicole.id, Person.stamper
 
-    @first_comment.comment << " - Updated"
+    @first_comment.comment = "Updated"
     @first_comment.save
     @first_comment.reload
     assert_equal @delynn.id, @first_comment.created_by
