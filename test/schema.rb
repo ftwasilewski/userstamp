@@ -10,11 +10,13 @@ ActiveRecord::Schema.define(:version => 0) do
 
   # People are created and updated by Users
   create_table :people, :force => true do |t|
-    t.column :name,           :string
-    t.column :created_by,     :integer
-    t.column :created_on,     :datetime
-    t.column :updated_by,     :integer
-    t.column :updated_at,     :datetime
+    t.column :name,                 :string
+    t.column :created_by,           :integer
+    t.column :created_by_type,      :string
+    t.column :created_by_full_name, :string
+    t.column :created_on,           :datetime
+    t.column :updated_by,           :integer
+    t.column :updated_at,           :datetime
   end
 
   # Posts are created and updated by People

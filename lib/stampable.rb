@@ -24,6 +24,12 @@ module Ddb #:nodoc:
           # What column should be used for the creator stamp?
           class_attribute :creator_attribute
 
+          # What column should be used for the creator type stamp?
+          class_attribute :creator_type_attribute
+
+          # What column should be used for the creator name stamp?
+          class_attribute :creator_name_attribute
+
           # What column should be used for the updater stamp?
           class_attribute :updater_attribute
 
@@ -48,19 +54,18 @@ module Ddb #:nodoc:
           defaults = {
             :stamper_class_name => :user,
             :creator_attribute  => :created_by,
+            :creator_type_attribute  => :created_by_type,
+            :creator_name_attribute  => :created_by_full_name,
             :updater_attribute  => :updated_by,
           }.merge(options)
 
           self.stamper_class_name = defaults[:stamper_class_name].to_sym
           self.creator_attribute  = defaults[:creator_attribute].to_sym
+          self.creator_type_attribute  = defaults[:creator_type_attribute].to_sym
+          self.creator_name_attribute  = defaults[:creator_name_attribute].to_sym
           self.updater_attribute  = defaults[:updater_attribute].to_sym
 
           class_eval do
-            klass = "::#{stamper_class_name.to_s.singularize.camelize}"
-
-            belongs_to :creator, :class_name => klass, :foreign_key => creator_attribute
-            belongs_to :updater, :class_name => klass, :foreign_key => updater_attribute
-
             before_validation :set_updater_attribute
             before_validation :set_creator_attribute, :on => :create
           end
@@ -93,11 +98,18 @@ module Ddb #:nodoc:
           end
 
           def set_creator_attribute
-            return unless self.record_userstamp
-            if respond_to?(self.creator_attribute.to_sym) && has_stamper?
-              if self.send(self.creator_attribute.to_sym).blank?
-                self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper)
-              end
+            return unless self.record_userstamp && has_stamper?
+
+            if respond_to?(self.creator_attribute.to_sym) && self.send(self.creator_attribute.to_sym).blank?
+              self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper)
+            end
+
+            if respond_to?(self.creator_type_attribute.to_sym) && self.send(self.creator_type_attribute).blank?
+              self.send("#{self.creator_type_attribute}=".to_sym, self.class.stamper_class.stamper.class.to_s)
+            end
+
+            if respond_to?(self.creator_name_attribute.to_sym) && self.send(self.creator_name_attribute).blank? && self.class.stamper_class.stamper.respond_to?(:full_name)
+              self.send("#{self.creator_name_attribute}=".to_sym, self.class.stamper_class.stamper.full_name)
             end
           end
 
