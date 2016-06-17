@@ -101,15 +101,15 @@ module Ddb #:nodoc:
             return unless self.record_userstamp && has_stamper?
 
             if respond_to?(self.creator_attribute.to_sym) && self.send(self.creator_attribute.to_sym).blank?
-              self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper)
+              self[self.creator_attribute.to_sym] = self.class.stamper_class.stamper.id.to_s
             end
 
             if respond_to?(self.creator_type_attribute.to_sym) && self.send(self.creator_type_attribute).blank?
-              self.send("#{self.creator_type_attribute}=".to_sym, self.class.stamper_class.stamper.class.to_s)
+              self[self.creator_type_attribute.to_sym] = self.class.stamper_class.stamper.class.to_s
             end
 
             if respond_to?(self.creator_name_attribute.to_sym) && self.send(self.creator_name_attribute).blank? && self.class.stamper_class.stamper.respond_to?(:full_name)
-              self.send("#{self.creator_name_attribute}=".to_sym, self.class.stamper_class.stamper.full_name)
+              self[self.creator_name_attribute.to_sym] = self.class.stamper_class.stamper.full_name.to_s
             end
           end
 
@@ -119,7 +119,7 @@ module Ddb #:nodoc:
             # or contains a serialized attribute (in which case the attribute value is always updated)
             return unless self.new_record? || self.changed? || self.class.serialized_attributes.present?
             if respond_to?(self.updater_attribute.to_sym) && has_stamper?
-              self.send("#{self.updater_attribute}=".to_sym, self.class.stamper_class.stamper)
+              self[self.updater_attribute.to_sym] = self.class.stamper_class.stamper.id.to_s
             end
           end
         #end private
