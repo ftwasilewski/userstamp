@@ -3,6 +3,8 @@ require 'rubygems'
 $LOAD_PATH.unshift('lib')
 
 # load normal stuff
+require 'minitest/spec'
+require 'rails/all'
 require 'active_support'
 require 'active_record'
 require 'action_controller'
