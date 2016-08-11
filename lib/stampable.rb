@@ -33,7 +33,7 @@ module Ddb #:nodoc:
           # What column should be used for the updater stamp?
           class_attribute :updater_attribute
 
-          self.stampable
+          self.stampable unless self.respond_to?('stampable')
         end
       end
 
@@ -116,8 +116,7 @@ module Ddb #:nodoc:
           def set_updater_attribute
             return unless self.record_userstamp
             # only set updater if the record is new or has changed
-            # or contains a serialized attribute (in which case the attribute value is always updated)
-            return unless self.new_record? || self.changed? || self.class.serialized_attributes.present?
+            return unless self.new_record? || self.changed?
             if respond_to?(self.updater_attribute.to_sym) && has_stamper?
               self[self.updater_attribute.to_sym] = self.class.stamper_class.stamper.id.to_s
             end
