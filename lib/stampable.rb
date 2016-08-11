@@ -33,7 +33,7 @@ module Ddb #:nodoc:
           # What column should be used for the updater stamp?
           class_attribute :updater_attribute
 
-          self.stampable unless self.respond_to?('stampable')
+          self.stampable
         end
       end
 
