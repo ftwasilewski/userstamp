@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :created_by_full_name, :string
     t.column :created_on,           :datetime
     t.column :updated_by,           :integer
+    t.column :updated_by_type,      :string
     t.column :updated_at,           :datetime
   end
 

@@ -23,7 +23,11 @@ class StampingTests < ActiveSupport::TestCase  # :nodoc:
     person = Person.create(:name => 'David')
 
     assert_equal @zeus.id, person.created_by
+    assert_equal @zeus.class.to_s, person.created_by_type
+    assert_equal @zeus.full_name, person.created_by_full_name
+
     assert_equal @zeus.id, person.updated_by
+    assert_equal @zeus.class.to_s, person.updated_by_type
   end
 
   test 'test_post_creation' do

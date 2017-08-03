@@ -33,6 +33,9 @@ module Ddb #:nodoc:
           # What column should be used for the updater stamp?
           class_attribute :updater_attribute
 
+          # What column should be used for the updater type stamp?
+          class_attribute :updater_type_attribute
+
           self.stampable
         end
       end
@@ -57,6 +60,7 @@ module Ddb #:nodoc:
             :creator_type_attribute  => :created_by_type,
             :creator_name_attribute  => :created_by_full_name,
             :updater_attribute  => :updated_by,
+            :updater_type_attribute  => :updated_by_type,
           }.merge(options)
 
           self.stamper_class_name = defaults[:stamper_class_name].to_sym
@@ -64,6 +68,7 @@ module Ddb #:nodoc:
           self.creator_type_attribute  = defaults[:creator_type_attribute].to_sym
           self.creator_name_attribute  = defaults[:creator_name_attribute].to_sym
           self.updater_attribute  = defaults[:updater_attribute].to_sym
+          self.updater_type_attribute  = defaults[:updater_type_attribute].to_sym
 
           class_eval do
             before_validation :set_updater_attribute
@@ -114,11 +119,15 @@ module Ddb #:nodoc:
           end
 
           def set_updater_attribute
-            return unless self.record_userstamp
+            return unless self.record_userstamp && has_stamper?
             # only set updater if the record is new or has changed
             return unless self.new_record? || self.changed?
-            if respond_to?(self.updater_attribute.to_sym) && has_stamper?
+            if respond_to?(self.updater_attribute.to_sym)
               self[self.updater_attribute.to_sym] = self.class.stamper_class.stamper.id.to_s
+            end
+
+            if respond_to?(self.updater_type_attribute.to_sym)
+              self[self.updater_type_attribute.to_sym] = self.class.stamper_class.stamper.class.to_s
             end
           end
         #end private
